@@ -1,9 +1,10 @@
 import pyautogui
 import time
 import numpy as np
-import tensorflow as tf
+#import tensorflow as tf
 import matplotlib.pyplot as plt
-%matplotlib inline
+#from IPython import get_ipython
+#get_ipython().run_line_magic('matplotlib', 'inline')
 import math
 import cv2
 from mss import mss
@@ -29,27 +30,26 @@ def turnAround():
 
 def detectEdges():
 	with mss() as sct:
+		monitor = {"top": 40, "left": 0, "width": width, "height": height}
 		sct.shot()
-		
-	while "Screen capturing":
-        last_time = time.time()
 
-        # Get raw pixels from the screen, save it to a Numpy array
-        img = numpy.array(sct.grab(monitor))
+		last_time = time.time()
 
-        # Display the picture
-        cv2.imshow("OpenCV/Numpy normal", img)
+		# Get raw pixels from the screen, save it to a Numpy array
+		img = np.array(sct.grab(monitor))
 
-        # Display the picture in grayscale
-        # cv2.imshow('OpenCV/Numpy grayscale',
-        #            cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY))
+		# Display the picture
+		cv2.imshow("OpenCV/Numpy normal", img)
 
-        print("fps: {}".format(1 / (time.time() - last_time)))
+		# Display the picture in grayscale
+		# cv2.imshow('OpenCV/Numpy grayscale',
+		#            cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY))
 
-        # Press "q" to quit
-        if cv2.waitKey(25) & 0xFF == ord("q"):
-            cv2.destroyAllWindows()
-            break
+		print("fps: {}".format(1 / (time.time() - last_time)))
+
+		# Press "q" to quit
+		if cv2.waitKey(25) & 0xFF == ord("q"):
+			cv2.destroyAllWindows()
 
 	img = cv2.imread('messi5.jpg',0)
 	edges = cv2.Canny(img,100,200)
