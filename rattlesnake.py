@@ -16,14 +16,13 @@ def main():
     while True:
         # do the thing
         # Wait one sec
-        #time.sleep(1)
         # detect edges
-        #detect_edges()
+        detect_edges()
         # decide if we want to turn around
         #turn_around()
-        move_circle()
-        pyautogui.moveTo(width / 2, height / 2 - 125)
-        pyautogui.click()
+        #move_circle()
+        #pyautogui.moveTo(width / 2, height / 2 - 125)
+        #pyautogui.click()
 
 
 def move_circle():
@@ -67,7 +66,7 @@ def detect_edges():
 
         print("fps: {}".format(1 / (time.time() - last_time)))
 
-        img = cv2.imread('messi5.jpg', 0)
+        img = cv2.imread('monitor-1.png')
         edges = cv2.Canny(img, 100, 200)
 
         plt.subplot(121), plt.imshow(img, cmap='gray')
@@ -76,9 +75,7 @@ def detect_edges():
         plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
 
         plt.show()
-
-        # Press "q" to quit
-        if cv2.waitKey(25) & 0xFF == ord("q"):
-            cv2.destroyAllWindows()
+        time.sleep(1)
+        cv2.destroyAllWindows()
 
 main()
