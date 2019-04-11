@@ -15,7 +15,8 @@ width, height = pyautogui.size()
 def main():
     while True:
         # do the thing
-        # Wait one sec
+        # Wait three sec
+        time.sleep(3)
         # detect edges
         detect_edges()
         # decide if we want to turn around
@@ -44,7 +45,7 @@ def turn_around():
     current_x, current_y = pyautogui.position()
     new_x = width - current_x
     new_y = height - current_y
-    pyautogui.moveTo(new_x, new_y, 10);
+    pyautogui.moveTo(new_x, new_y, 10)
 
 
 def detect_edges():
@@ -58,7 +59,7 @@ def detect_edges():
         img = np.array(sct.grab(monitor))
 
         # Display the picture
-        cv2.imshow("OpenCV/Numpy normal", img)
+        # cv2.imshow("OpenCV/Numpy normal", img)
 
         # Display the picture in grayscale
         # cv2.imshow('OpenCV/Numpy grayscale',
@@ -75,7 +76,34 @@ def detect_edges():
         plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
 
         plt.show()
-        time.sleep(1)
-        cv2.destroyAllWindows()
+        current_x, current_y = pyautogui.position()
+
+        currentXRange = []
+        currentYRange = []
+'''
+        # If mouse in left side of screen
+        if current_x < width / 2:
+            # Fill array with values from 0 to mouse position
+            for x in range(0, current_x):
+                currentXRange[x] = x
+        # If mouse in right side of screen
+        else:
+            # Fill array with values from position to edge of screen
+            for x in range(current_x, width):
+                currentXRange[x - current_x] = x
+
+        # If mouse in top half of screen
+        if current_y < height/ 2:
+            # Fill array with values from 0 to mouse position
+            for y in range(0, current_y):
+                currentYRange[y] = y
+        # If mouse in bottom half of screen
+        else:
+            # Fill array with values from mouse position to bottom of screen
+            for y in range(current_y, width):
+                currentYRange[y - current_y] = y
+
+        plt.plot(currentXRange, currentYRange, linewidth=20.0)
+'''
 
 main()
