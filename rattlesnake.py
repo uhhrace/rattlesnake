@@ -14,16 +14,44 @@ width, height = pyautogui.size()
 
 def main():
     while True:
-        # do the thing
-        # Wait three sec
-        time.sleep(3)
-        # detect edges
-        detect_edges()
-        # decide if we want to turn around
-        #turn_around()
-        #move_circle()
-        #pyautogui.moveTo(width / 2, height / 2 - 125)
-        #pyautogui.click()
+        # Detect edges
+        contours = detect_edges()
+
+        # Find coordinates for biggest shape on screen
+        cx, cy, c = find_biggest_thing(contours)
+
+        # If biggest thing is bigger than a threshold, turn around
+        if cv2.contourArea(c) > 3000:
+            print("Snake size ", cv2.contourArea(c)," at ", cx, cy)
+            # Move to biggest shape
+            pyautogui.moveTo(cx, cy)
+            turn_around()
+        # Else, just go there
+        else:
+            pyautogui.moveTo(cx, cy)
+            print("Snack size ", cv2.contourArea(c), " at ", cx, cy)
+
+
+def find_biggest_thing(contours):
+    c = max(contours, key=cv2.contourArea)
+
+    M = cv2.moments(c)
+
+    cx = int(M['m10'] / M['m00'])
+
+    cy = int(M['m01'] / M['m00'])
+
+    # If myself is the biggest object on screen, find next one
+    if (cx + 20 == (width / 2) or cx - 20 == (width / 2) and
+            cy + 20 == (height / 2) or cy - 20 == (height / 2)):
+        print('Found self, finding another')
+        contours.remove(c)
+        c = max(contours, key=cv2.contourArea)
+        M = cv2.moments(c)
+        cx = int(M['m10'] / M['m00'])
+        cy = int(M['m01'] / M['m00'])
+
+    return cx, cy, c
 
 
 def move_circle():
@@ -45,7 +73,7 @@ def turn_around():
     current_x, current_y = pyautogui.position()
     new_x = width - current_x
     new_y = height - current_y
-    pyautogui.moveTo(new_x, new_y, 10)
+    pyautogui.moveTo(new_x, new_y, 0)
 
 
 def detect_edges():
@@ -53,7 +81,7 @@ def detect_edges():
         monitor = {"top": 40, "left": 0, "width": width, "height": height}
         sct.shot()
 
-        last_time = time.time()
+        # last_time = time.time()
 
         # Get raw pixels from the screen, save it to a Numpy array
         img = np.array(sct.grab(monitor))
@@ -65,45 +93,14 @@ def detect_edges():
         # cv2.imshow('OpenCV/Numpy grayscale',
         #            cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY))
 
-        print("fps: {}".format(1 / (time.time() - last_time)))
+        # print("fps: {}".format(1 / (time.time() - last_time)))
 
         img = cv2.imread('monitor-1.png')
         edges = cv2.Canny(img, 100, 200)
 
-        plt.subplot(121), plt.imshow(img, cmap='gray')
-        plt.title('Original Image'), plt.xticks([]), plt.yticks([])
-        plt.subplot(122), plt.imshow(edges, cmap='gray')
-        plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
+        # Find the contours of the frame
 
-        plt.show()
-        current_x, current_y = pyautogui.position()
-
-        currentXRange = []
-        currentYRange = []
-'''
-        # If mouse in left side of screen
-        if current_x < width / 2:
-            # Fill array with values from 0 to mouse position
-            for x in range(0, current_x):
-                currentXRange[x] = x
-        # If mouse in right side of screen
-        else:
-            # Fill array with values from position to edge of screen
-            for x in range(current_x, width):
-                currentXRange[x - current_x] = x
-
-        # If mouse in top half of screen
-        if current_y < height/ 2:
-            # Fill array with values from 0 to mouse position
-            for y in range(0, current_y):
-                currentYRange[y] = y
-        # If mouse in bottom half of screen
-        else:
-            # Fill array with values from mouse position to bottom of screen
-            for y in range(current_y, width):
-                currentYRange[y - current_y] = y
-
-        plt.plot(currentXRange, currentYRange, linewidth=20.0)
-'''
+        contours, hierarchy = cv2.findContours(edges.copy(), 1, cv2.CHAIN_APPROX_NONE)
+        return contours
 
 main()
