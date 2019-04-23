@@ -8,28 +8,27 @@ import matplotlib.pyplot as plt
 import math
 import cv2
 from mss import mss
+import webbrowser
+
 
 width, height = pyautogui.size()
 
 
 def main():
+    # webbrowser.open('http://slither.io/')
+    chrome_path = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+    webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
+    webbrowser.get('chrome').open_new_tab('http://slither.io/')
+    pyautogui.moveTo(965, 438, 10)
+    pyautogui.click()
     while True:
-        # Detect edges
-        contours = detect_edges()
+        start_game()
+        play_game()
 
-        # Find coordinates for biggest shape on screen
-        cx, cy, c = find_biggest_thing(contours)
 
-        # If biggest thing is bigger than a threshold, turn around
-        if cv2.contourArea(c) > 3000:
-            print("Snake size ", cv2.contourArea(c)," at ", cx, cy)
-            # Move to biggest shape
-            pyautogui.moveTo(cx, cy)
-            turn_around()
-        # Else, just go there
-        else:
-            pyautogui.moveTo(cx, cy)
-            print("Snack size ", cv2.contourArea(c), " at ", cx, cy)
+def start_game():
+    pyautogui.moveTo(965, 438)
+    pyautogui.click()
 
 
 def find_biggest_thing(contours):
@@ -102,5 +101,35 @@ def detect_edges():
 
         contours, hierarchy = cv2.findContours(edges.copy(), 1, cv2.CHAIN_APPROX_NONE)
         return contours
+
+
+def play_game():
+    cx, cy = pyautogui.position()
+    keepGoing = 0
+    while keepGoing < 3:
+        # Detect edges
+        contours = detect_edges()
+
+        # Find coordinates for biggest shape on screen
+        cx, cy, c = find_biggest_thing(contours)
+
+        if (cx + 50 >= 959 or cx - 50 <= 959 and
+                cy + 50 >= 352 or cy - 50 <= 352):
+            keepGoing += 1
+        else:
+            keepGoing -= 1
+
+
+        # If biggest thing is bigger than a threshold, turn around
+        if cv2.contourArea(c) > 3000:
+            print("Snake size ", cv2.contourArea(c), " at ", cx, cy)
+            # Move to biggest shape
+            pyautogui.moveTo(cx, cy)
+            turn_around()
+        # Else, just go there
+        else:
+            pyautogui.moveTo(cx, cy)
+            print("Snack size ", cv2.contourArea(c), " at ", cx, cy)
+
 
 main()
