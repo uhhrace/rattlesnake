@@ -9,7 +9,14 @@ import math
 import cv2
 from mss import mss
 import webbrowser
+'''
+from requests import get
+from requests.exceptions import RequestException
+from contextlib import closing
+from bs4 import BeautifulSoup
+'''
 
+# Record size : 1491
 
 width, height = pyautogui.size()
 
@@ -19,11 +26,12 @@ def main():
     chrome_path = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
     webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
     webbrowser.get('chrome').open_new_tab('http://slither.io/')
-    pyautogui.moveTo(965, 438, 10)
+    pyautogui.moveTo(965, 438, 4)
     pyautogui.click()
     while True:
         start_game()
         play_game()
+        print('Game over man')
 
 
 def start_game():
@@ -39,7 +47,7 @@ def find_biggest_thing(contours):
     cx = int(M['m10'] / M['m00'])
 
     cy = int(M['m01'] / M['m00'])
-
+    '''
     # If myself is the biggest object on screen, find next one
     if (cx + 20 == (width / 2) or cx - 20 == (width / 2) and
             cy + 20 == (height / 2) or cy - 20 == (height / 2)):
@@ -48,7 +56,7 @@ def find_biggest_thing(contours):
         c = max(contours, key=cv2.contourArea)
         M = cv2.moments(c)
         cx = int(M['m10'] / M['m00'])
-        cy = int(M['m01'] / M['m00'])
+        cy = int(M['m01'] / M['m00'])'''
 
     return cx, cy, c
 
@@ -113,12 +121,14 @@ def play_game():
         # Find coordinates for biggest shape on screen
         cx, cy, c = find_biggest_thing(contours)
 
-        if (cx + 50 >= 959 or cx - 50 <= 959 and
-                cy + 50 >= 352 or cy - 50 <= 352):
+        # On game over screen
+        if (cx == 959 and cy == 382) or (cx == 959 and cy == 352):
+            # print('upped')
             keepGoing += 1
         else:
-            keepGoing -= 1
-
+            # print('downed')
+            keepGoing = 0
+        # print(keepGoing)
 
         # If biggest thing is bigger than a threshold, turn around
         if cv2.contourArea(c) > 3000:
