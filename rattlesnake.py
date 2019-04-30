@@ -30,7 +30,7 @@ def main():
     pyautogui.click()
     while True:
         start_game()
-        alpha_protocol()
+        beta_protocol()
         print('Game over man')
 
 
@@ -145,32 +145,51 @@ def alpha_protocol():
 
 
 def beta_protocol():
-    '''
-    1. Take screenshot and canny detect shapes
-    2. Detect 5 largest shapes, 3 methods to do so
-        a. Search
-            i.  Init largest[5] to hold coordinates for 5 largest objects.
-            ii. Search contours list and compare with largest[5]
-            iii.If anything we come across is larger than something in the list, swap for smallest in list.
-        b.  Sort and return
-            i.  Run quicksort on list of contours
-            ii. Return contours[0..4]
-        c.  Pop
-            i.  While largest[].length <= 5
-            ii. Find largest shape in list of contours
-            iii.Add to largest[]
-            iv. Remove from list of contours
-    3.  Enclose 5 largest shapes in circles
-    4.  Draw tangent lines from center of screen to both sides of each circle
-        a.
-            i.  For each circle
-            ii. Draw 2 tangent lines clockwise starting at right side of top circle
-            iii.Return lines[]
-    5.  Find area of escape routes
-        a.
-            i.  int x = 0; While x < lines[].length
-            ii. Distance = lines[x].endpoint - lines[x+1].endpoint
-    6.  Move mouse to midpoint of linepair with largest area
-    '''
+
+    with mss() as sct:
+        monitor = {"top": 40, "left": 0, "width": width, "height": height}
+        # Get raw pixels from the screen, save it to a Numpy array
+        img = np.array(sct.grab(monitor))
+        # 1. Take screenshot and canny detect shapes
+        contours = detect_edges()
+
+        '''
+        2. Detect 5 largest shapes, 3 methods to do so
+            a. Search
+                i.  Init largest[5] to hold coordinates for 5 largest objects.
+                ii. Search contours list and compare with largest[5]
+                iii.If anything we come across is larger than something in the list, swap for smallest in list.
+            b.  Sort and return
+                i.  Run quicksort on list of contours
+                ii. Return contours[0..4]
+            c.  Pop
+                i.  While largest[].length <= 5
+                ii. Find largest shape in list of contours
+                iii.Add to largest[]
+                iv. Remove from list of contours
+        '''
+        # 2. Sort list of contours by size, return 5 largest
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:5]
+        # 3.  Enclose 5 largest shapes in circles
+        for contour in contours:
+            (x, y), radius = cv2.minEnclosingCircle(contour)
+            center = (int(x), int(y))
+            radius = int(radius)
+            cv2.circle(img, center, radius, (0, 255, 0), 2)
+
+        cv2.imshow("circles", img)
+        cv2.waitKey(0);
+        '''
+        4.  Draw tangent lines from center of screen to both sides of each circle
+            a.
+                i.  For each circle
+                ii. Draw 2 tangent lines clockwise starting at right side of top circle
+                iii.Return lines[]
+        5.  Find area of escape routes
+            a.
+                i.  int x = 0; While x < lines[].length
+                ii. Distance = lines[x].endpoint - lines[x+1].endpoint
+        6.  Move mouse to midpoint of linepair with largest area
+        '''
 
 main()
