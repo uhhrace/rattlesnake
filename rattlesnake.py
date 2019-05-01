@@ -30,7 +30,7 @@ def main():
     pyautogui.click()
     while True:
         start_game()
-        beta_protocol()
+        alpha_protocol()
         print('Game over man')
 
 
@@ -145,13 +145,25 @@ def alpha_protocol():
 
 
 def beta_protocol():
-
+    time.sleep(5)
     with mss() as sct:
         monitor = {"top": 40, "left": 0, "width": width, "height": height}
         # Get raw pixels from the screen, save it to a Numpy array
-        img = np.array(sct.grab(monitor))
         # 1. Take screenshot and canny detect shapes
-        contours = detect_edges()
+        # contours = detect_edges()
+
+        img = np.array(sct.grab(monitor))
+        v = np.median(img)
+
+        # ---- apply automatic Canny edge detection using the computed median----
+        lower = int(max(0, (1.0 - .33) * v))
+        upper = int(min(255, (1.0 + .33) * v))
+        edges = cv2.Canny(img, 100, 200)
+        cv2.MORPH_CROSS
+
+        # Find the contours of the frame
+
+        contours, hierarchy = cv2.findContours(edges.copy(), 1, cv2.CHAIN_APPROX_NONE)
 
         '''
         2. Detect 5 largest shapes, 3 methods to do so
@@ -175,10 +187,14 @@ def beta_protocol():
             (x, y), radius = cv2.minEnclosingCircle(contour)
             center = (int(x), int(y))
             radius = int(radius)
-            cv2.circle(img, center, radius, (0, 255, 0), 2)
+            cv2.circle(edges, center, radius, (0, 255, 0), 2)
 
-        cv2.imshow("circles", img)
-        cv2.waitKey(0);
+        plt.subplot(121), plt.imshow(img, cmap='gray')
+        plt.title('Original Image'), plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(edges, cmap='gray')
+        plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
+
+        plt.show()
         '''
         4.  Draw tangent lines from center of screen to both sides of each circle
             a.
