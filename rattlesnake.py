@@ -189,6 +189,18 @@ def beta_protocol():
             radius = int(radius)
             cv2.circle(edges, center, radius, (0, 255, 0), 2)
 
+        '''
+        4. Find bad angles
+        Given centerpoint of object = x2, y2
+        Given centerpoint of screen = x1, y1
+        a. H = sqrt ( (x2 - x1)^2 + (y2 - y1)^2 )
+        C = arctan( delta y / delta x ) + (( x2 < widthOfScreen/2 ) ? +180 : nothing) 
+        b. given radius and angle to the circle C, bad angle = C +-( 90 - (arccos( r/h ))
+        slap groups into consolidator, resolve overlapping circles
+        find biggest remaining safe angle
+        '''
+
+
         plt.subplot(121), plt.imshow(img, cmap='gray')
         plt.title('Original Image'), plt.xticks([]), plt.yticks([])
         plt.subplot(122), plt.imshow(edges, cmap='gray')
