@@ -3,9 +3,9 @@
 
 <h2> Requirements </h2>
 <ol>
-	<li>Git</li>
-	<li>Python 3</li>
-	<li>Chrome</li>
+	<li><a href=https://git-scm.com/downloads>Git</a></li>
+	<li><a href=https://www.python.org/downloads/>Python 3</a></li>
+	<li><a href=https://www.google.com/chrome/>Chrome</a></li>
 </ol>
 
 <h2>Installation</h2>
