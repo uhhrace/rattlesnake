@@ -19,10 +19,10 @@ Automating the slither.io webgame using image recognition and pathfinding
 3) pip install -r requirements.txt
 
 
+          ___                 _   _          
+         | __|_ _____ __ _  _| |_(_)___ _ _  
+         | _|\ \ / -_) _| || |  _| / _ \ ' \ 
+         |___/_\_\___\__|\_,_|\__|_\___/_||_|
+                                     
 
-	  ___                 _   _          
-	 | __|_ _____ __ _  _| |_(_)___ _ _  
-	 | _|\ \ / -_) _| || |  _| / _ \ ' \ 
-	 |___/_\_\___\__|\_,_|\__|_\___/_||_|
-
-1) python rattlesnake.py
+1. python rattlesnake.py
