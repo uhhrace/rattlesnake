@@ -1,28 +1,22 @@
-	           _   _   _                       _        
-	          | | | | | |                     | |       
-	 _ __ __ _| |_| |_| | ___  ___ _ __   __ _| | _____ 
-	| '__/ _` | __| __| |/ _ \/ __| '_ \ / _` | |/ / _ \
-	| | | (_| | |_| |_| |  __/\__ \ | | | (_| |   <  __/
-	|_|  \__,_|\__|\__|_|\___||___/_| |_|\__,_|_|\_\___|
+<h1>Rattlesnake</h1>
+<i>Automating the slither.io webgame using image recognition and pathfinding</i>
 
-Automating the slither.io webgame using image recognition and pathfinding
+<h2> Requirements </h2>
+<ol>
+	<li>Git</li>
+	<li>Python 3</li>
+	<li>Chrome</li>
+</ol>
 
+<h2>Installation</h2>
+<ol> 
+	<li>git clone github.com/uhhrace/rattlesnake.git </li>
+	<li>cd rattlesnake</li>
+	<li>pip install -r requirements.txt</li>
+</ol>
 
-
-	  ___         _        _ _      _   _          
-	 |_ _|_ _  __| |_ __ _| | |__ _| |_(_)___ _ _  
-	  | || ' \(_-<  _/ _` | | / _` |  _| / _ \ ' \ 
-	 |___|_||_/__/\__\__,_|_|_\__,_|\__|_\___/_||_|
-
-1) git clone github.com/uhhrace/rattlesnake.git
-2) cd rattlesnake
-3) pip install -r requirements.txt
-
-
-          ___                 _   _          
-         | __|_ _____ __ _  _| |_(_)___ _ _  
-         | _|\ \ / -_) _| || |  _| / _ \ ' \ 
-         |___/_\_\___\__|\_,_|\__|_\___/_||_|
-                                     
-
-1. python rattlesnake.py
+<h2> Execution</h2>
+<ol>
+	<li>python rattlesnake.py</li>
+</ol>
+	
