@@ -26,8 +26,8 @@ def main():
     chrome_path = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
     webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
     webbrowser.get('chrome').open_new_tab('http://slither.io/')
-    pyautogui.moveTo(965, 438, 4)
-    pyautogui.click()
+    time.sleep(5)
+    start_game()
     while True:
         start_game()
         alpha_protocol()
@@ -35,7 +35,10 @@ def main():
 
 
 def start_game():
-    pyautogui.moveTo(965, 438)
+
+    contours = detect_edges()
+    cx, cy, c = find_biggest_thing(contours)
+    pyautogui.moveTo(cx, cy + 100)
     pyautogui.click()
 
 
@@ -80,6 +83,11 @@ def turn_around():
     current_x, current_y = pyautogui.position()
     new_x = width - current_x
     new_y = height - current_y
+    pyautogui.moveTo(new_x, new_y, 0)
+    
+def move_away_from(x, y):
+    new_x = width - x
+    new_y = height - y
     pyautogui.moveTo(new_x, new_y, 0)
 
 
@@ -134,10 +142,12 @@ def alpha_protocol():
 
         # If biggest thing is bigger than a threshold, turn around
         if cv2.contourArea(c) > 3000:
-            print("Snake size ", cv2.contourArea(c), " at ", cx, cy)
-            # Move to biggest shape
-            pyautogui.moveTo(cx, cy)
-            turn_around()
+            if(cx >= 1851 and cy >= 971):
+                print("Map found")
+            else:
+                print("Snake size ", cv2.contourArea(c), " at ", cx, cy)
+                # Move away from biggest shape
+                move_away_from(cx, cy)
         # Else, just go there
         else:
             pyautogui.moveTo(cx, cy)
