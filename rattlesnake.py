@@ -30,7 +30,9 @@ def main():
     start_game()
     while True:
         start_game()
-        alpha_protocol()
+        # alpha_protocol()
+        # beta_protocol()
+        gamma_protocol()
         print('Game over man')
 
 
@@ -229,5 +231,68 @@ def beta_protocol():
                 ii. Distance = lines[x].endpoint - lines[x+1].endpoint
         6.  Move mouse to midpoint of linepair with largest area
         '''
+
+def gamma_protocol():
+    time.sleep(5)
+    with mss() as sct:
+        monitor = {"top": 40, "left": 0, "width": math.floor((width/2)), "height": height}
+        # Get raw pixels from the screen, save it to a Numpy array
+        # 1. Take screenshot and canny detect shapes
+        # contours = detect_edges()
+
+        img = np.array(sct.grab(monitor))
+        v = np.median(img)
+
+        # ---- apply automatic Canny edge detection using the computed median----
+        lower = int(max(0, (1.0 - .33) * v))
+        upper = int(min(255, (1.0 + .33) * v))
+        edges = cv2.Canny(img, 100, 200)
+        cv2.MORPH_CROSS
+
+        # Find the contours of the frame
+
+        contours, hierarchy = cv2.findContours(edges.copy(), 1, cv2.CHAIN_APPROX_NONE)
+
+        '''
+        2. Detect 5 largest shapes, 3 methods to do so
+            a. Search
+                i.  Init largest[5] to hold coordinates for 5 largest objects.
+                ii. Search contours list and compare with largest[5]
+                iii.If anything we come across is larger than something in the list, swap for smallest in list.
+            b.  Sort and return
+                i.  Run quicksort on list of contours
+                ii. Return contours[0..4]
+            c.  Pop
+                i.  While largest[].length <= 5
+                ii. Find largest shape in list of contours
+                iii.Add to largest[]
+                iv. Remove from list of contours
+        '''
+        # 2. Sort list of contours by size, return 3 largest
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:3]
+        # 3.  Enclose 5 largest shapes in circles
+        for contour in contours:
+            (x, y), radius = cv2.minEnclosingCircle(contour)
+            center = (int(x), int(y))
+            radius = int(radius)
+            cv2.circle(edges, center, radius, (0, 255, 0), 200)
+
+        '''
+        4. Draw 8 compass lines from center of screen, these will be our 'feelers'
+        5. numpy.bitwise_and for a binary and operation for each line with each circle
+        6. This will give 8 arrays containing intersection points for each line.
+        7. Remove duplicate points on lines, keeping the point closest to center
+        8. Draw a polygon given points on lines.
+        9. Find the polygon line with biggest length.
+        10. Move towards center of that polygon line
+        11. Rinse and repeat
+        '''
+
+        plt.subplot(121), plt.imshow(img, cmap='gray')
+        plt.title('Original Image'), plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(edges, cmap='gray')
+        plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
+
+        plt.show()
 
 main()
